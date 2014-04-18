@@ -1,0 +1,10 @@
+#small_services:after {
+    content: '';
+    display: block;
+    clear: both;
+}
+
+#small_services img {
+    margin: 5px;
+    float: left;
+}
