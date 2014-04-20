@@ -69,33 +69,200 @@
             <section>
                 <h3>The amount of configuration can overload</h3>
 
-                <p class="fragment" data-fragment-index="0">PHP 5.5 EE ?</p>
+                <p class="fragment" data-fragment-index="0">PHP 5.5 EE </p>
                 <img class="fragment" data-fragment-index="1" src="images/mess.jpeg"/>
             </section>
         </section>
         <section>
-        <section>
-            <p>Now we know why</p>
+            <section>
+                <h2>Is there any hope?</h2>
+            </section>
+            <section>
+                <h2>There is...<br/>
+                    <img src="images/solution.png">
+                </h2>
 
-            <p class="fragment" data-fragment-index="0">It is easy to criticise</p>
+            </section>
 
-            <p class="fragment" data-fragment-index="1">Is there any hope?</p>
+            <section>
+                <p>JMSDiExtraBundle adds more powerful dependency injection features to Symfony2 and let's you:</p>
 
-            <p class="fragment" data-fragment-index="2">There is...<br/>
-                <img src="images/solution.png">
-            </p>
+                <ul>
+                    <li>configure dependency injection via annotations</li>
+                    <li>convention-based dependency injection in controllers and services</li>
+                </ul>
+            </section>
         </section>
 
         <section>
-            <p>JMSDiExtraBundle adds more powerful dependency injection features to Symfony2 and let's you:</p>
-
+            <h2>Examples:</h2>
             <ul>
-                <li>configure dependency injection via annotations</li>
-                <li>convention-based dependency injection in controllers and services</li>
+                <li>define service</li>
+                <li>constructor injection</li>
+                <li>property injection</li>
+                <li>method/getter injection</li>
+                <li>repositories</li>
             </ul>
         </section>
+
+        <section>
+            <section>
+                <h3>- define service</h3>
+                <pre><code>
+    class ProblemSolver
+    {
+        public function doTheMagic() {
+            return 42;
+        }
+    }
+                </code></pre>
+            </section>
+            <section>
+                <pre><code>
+    use JMS\DiExtraBundle\Annotation\Service;
+
+    /** @Service("some.service.id") */
+    class ProblemSolver
+    {
+        public function doTheMagic() {
+            return 42;
+        }
+    }
+                </code></pre>
+            </section>
         </section>
 
+        <section>
+            <section>
+                <h3>- constructor injection</h3>
+                <pre><code>
+        /** @Service("some.service.id") */
+        class ProblemSolver
+        {
+            private $em;
+
+            public function __construct(EntityManager $em)
+            {
+                $this->em = $em;
+            }
+
+            public function doTheMagic() { ... }
+        }
+                </code></pre>
+            </section>
+            <section>
+                <pre><code>
+        use JMS\DiExtraBundle\Annotation as DI;
+
+        /** @Service("some.service.id") */
+        class ProblemSolver
+        {
+            private $em;
+
+            /**
+            * @DI\InjectParams({"em" = @DI\Inject("doctrine.orm.entity_manager")})
+            * @param EntityManager $em
+            */
+            public function __construct(EntityManager $em)
+            {
+                $this->em = $em;
+            }
+        }
+                </code></pre>
+            </section>
+        </section>
+
+        <section>
+            <section>
+                <h3>- property injection</h3>
+                <pre><code>
+        /** @Service("some.service.id") */
+        class ProblemSolver
+        {
+            private $em;
+
+            private $cacheDir;
+
+            public function __construct(EntityManager $em)
+            {
+                $this->em = $em;
+            }
+
+            public function doTheMagic() { ... }
+        }
+                </code></pre>
+            </section>
+            <section>
+                <pre><code>
+        use JMS\DiExtraBundle\Annotation\Inject;
+
+        class ProblemSolver
+        {
+            /** @Inject("doctrine.orm.entity_manager") */
+            public $em;
+
+            /** @Inject("%kernel.cache_dir%") */
+            public $cacheDir;
+
+            public function doTheMagic() { ... }
+        }
+                </code></pre>
+            </section>
+        </section>
+
+        <section>
+            <h3>- method/getter injection, lazy initialization</h3>
+            <pre><code>
+        class DefaultController extends Controller
+        {
+
+            /** @Route("/") */
+            public function indexAction()
+            {
+                $out = ';(';
+                if ($this->getMailer() instanceof \Swift_Mailer) {
+                    $out = ';)';
+                }
+
+                return new Response($out);
+            }
+
+            /** @DI\LookupMethod("mailer") */
+            protected function getMailer() { /* Nothing here */}
+            </code></pre>
+            <p class="fragment" data-fragment-index="0">works only in controller</p>
+            <p class="fragment" data-fragment-index="1">no benefits over $this->get('mailer')</p>
+        </section>
+
+        <section>
+            <h3>Possibilities</h3>
+            <pre><code>
+        @Inject("security.context", required = false)
+        @Inject("request", strict = false)
+        @Service("some.service.id", parent="another.service.id", public=false)
+        @Tag("doctrine.event_listener", attributes = {"event" = "postGenerateSchema"})
+        @Observe("kernel.request", priority = 255)
+        @Observe(KernelEvents::REQUEST, priority = 255)
+        @Validator("my_alias")
+        @FormType
+        @DoctrineListener or @DoctrineMongoDBListener¶
+            </code></pre>
+        </section>
+
+        <section>
+            <h2>Disadvantages</h2>
+            <ul>
+                <li>property injection - must be public, free access</li>
+                <li>... but there is setter injection</li>
+                <li>lack of support of lazy services</li>
+                <li>SSD is a must for huge projects in dev mode</li>
+                <li>development of this bundle seems to be ended</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Tests</h2>
+        </section>
 
         <section>
             <p>More info:</p>
