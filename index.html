@@ -28,22 +28,56 @@
             <h2>JMSDiExtraBundle</h2>
 
             <h3>Why and how</h3>
+        </section>
 
+        <section>
+            <img src="images/packagist.png">
             <p>
                 <small>Source: <a href="http://jmsyst.com/bundles/JMSDiExtraBundle/1.1">http://jmsyst.com/bundles/JMSDiExtraBundle/1.1</a></small>
             </p>
         </section>
 
         <section>
-            <section>
-                <h2>The challenge</h2>
+            <h2>The challenge</h2>
 
-                <p>Configuration of services for project</p>
+            <p>Configuration of services for project</p>
+            <ul>
+                <li class="fragment" data-fragment-index="0">location</li>
+                <li class="fragment" data-fragment-index="1">format</li>
+                <li class="fragment" data-fragment-index="2">structure</li>
+            </ul>
+        </section>
+
+        <section>
+            <section>
+                <h2>Location</h2>
+            </section>
+
+            <section>
+                <img src="images/config_location.png">
                 <ul>
-                    <li class="fragment" data-fragment-index="0">location</li>
-                    <li class="fragment" data-fragment-index="1">format</li>
-                    <li class="fragment" data-fragment-index="2">structure</li>
+                    <li>/app/config</li>
+                    <li>/yourBundle/Resources/config</li>
                 </ul>
+            </section>
+
+        </section>
+
+        <section>
+            <h2>Format</h2>
+
+            <img src="images/config/before.png">
+            <p class="fragment" data-fragment-index="0">INI - limited</p>
+            <p class="fragment" data-fragment-index="1">Advantages of using XML:</p>
+            <ul class="fragment" data-fragment-index="2">
+                <li>http://symfony.com/schema/dic/services/services-1.0.xsd</li>
+                <li>IDE autocomplete, etc</li>
+            </ul>
+        </section>
+
+        <section>
+            <section>
+                <h2>Structure</h2>
             </section>
 
             <section>
@@ -101,7 +135,6 @@
                 <li>constructor injection</li>
                 <li>property injection</li>
                 <li>method/getter injection</li>
-                <li>repositories</li>
             </ul>
         </section>
 
@@ -235,39 +268,120 @@
         </section>
 
         <section>
-            <h3>Possibilities</h3>
-            <pre><code>
+            <section>
+                <h3>Possibilities</h3>
+                <pre><code>
         @Inject("security.context", required = false)
+
         @Inject("request", strict = false)
+
         @Service("some.service.id", parent="another.service.id", public=false)
+
         @Tag("doctrine.event_listener", attributes = {"event" = "postGenerateSchema"})
+
         @Observe("kernel.request", priority = 255)
+
         @Observe(KernelEvents::REQUEST, priority = 255)
+                </code></pre>
+            </section>
+            <section>
+                <h3>Possibilities 2</h3>
+                <pre><code>
         @Validator("my_alias")
+
         @FormType
+
         @DoctrineListener or @DoctrineMongoDBListener¶
-            </code></pre>
+
+        class Controller
+        {
+            /** @Inject */
+            private $session;
+                </code></pre>
+            </section>
         </section>
 
         <section>
-            <h2>Disadvantages</h2>
-            <ul>
-                <li>property injection - must be public, free access</li>
-                <li>... but there is setter injection</li>
-                <li>lack of support of lazy services</li>
-                <li>SSD is a must for huge projects in dev mode</li>
-                <li>development of this bundle seems to be ended</li>
-            </ul>
+            <section>
+                <h2>Worth to know:</h2>
+                <ul>
+                    <li>lack of support of lazy services - think twice your services hierarchy</li>
+                    <li>SSD is a must for huge projects in dev mode</li>
+                    <li>development of this bundle seems to be ended</li>
+                </ul>
+            </section>
+            <section>
+                <ul>
+                    <li>property injection - must be public, free access</li>
+                    <li>... but there is constructor injection ... if you like</li>
+                </ul>
+            </section>
         </section>
 
         <section>
-            <h2>Tests</h2>
+            <section>
+                <h2>Tests</h2>
+                <pre><code>
+        /**
+        * @DI\Service("mrok_press.problem_solver")
+        */
+        class ProblemSolver
+        {
+
+            /** @DI\Inject */
+            public $mailer;
+
+            public function doTheMagic()
+            {
+                return (isset($this->mailer)) ? 42 : -1;
+            }
+        }
+                </code></pre>
+            </section>
+
+            <section>
+                <pre><code>
+        class ProblemSolverTest extends \PHPUnit_Framework_TestCase
+        {
+            /**
+            * @test
+            */
+            public function doTheMagic()
+            {
+                $ps = new ProblemSolver();
+                $mock = \Mockery::mock('swift_mailer');
+                $mock->shouldReceive('send')->times(0);
+
+                $ps->mailer = $mock;
+
+                $this->assertEquals(42, $ps->doTheMagic());
+            }
+        }
+                </code></pre>
+            </section>
+            <section>
+                <img src="images/tests.png">
+            </section>
         </section>
 
         <section>
             <p>More info:</p>
             Project page: <a href="http://jmsyst.com/bundles/JMSDiExtraBundle/1.1">http://jmsyst.com/bundles/JMSDiExtraBundle/1.1</a><br/>
             Github: <a href="https://github.com/schmittjoh/JMSDiExtraBundle">https://github.com/schmittjoh/JMSDiExtraBundle</a>
+        </section>
+
+        <section>
+            <h2>Bonus - info for new jedi:</h2>
+            <img src="https://s3.amazonaws.com/titlepages.leanpub.com/a-year-with-symfony/large?1397678442">
+            <a href="https://leanpub.com/a-year-with-symfony">A Year With Symfony by Matthias Noback</a>
+        </section>
+
+        <section>
+            <h2>Feedback</h2>
+        </section>
+
+        <section>
+            <h2>The end</h2>
         </section>
     </div>
 
