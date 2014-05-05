@@ -279,7 +279,8 @@
 
         @Tag("doctrine.event_listener", attributes = {"event" = "postGenerateSchema"})
 
-        @Observe("kernel.request", priority = 255)
+        @Observe("kernel.request", priority = 255) - Automatically registers a method
+                                                     as listener to a certain event:
 
         @Observe(KernelEvents::REQUEST, priority = 255)
                 </code></pre>
@@ -291,7 +292,7 @@
 
         @FormType
 
-        @DoctrineListener or @DoctrineMongoDBListener¶
+        @DoctrineListener or @DoctrineMongoDBListener
 
         class Controller
         {
@@ -328,7 +329,7 @@
         class ProblemSolver
         {
 
-            /** @DI\Inject */
+            /** @DI\Inject(required = false) */
             public $mailer;
 
             public function doTheMagic()
