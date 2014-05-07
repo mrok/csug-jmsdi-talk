@@ -324,7 +324,7 @@
                 <h2>Tests</h2>
                 <pre><code>
         /**
-        * @DI\Service("mrok_press.problem_solver")
+        * @DI\Service("mrok.problem_solver")
         */
         class ProblemSolver
         {
@@ -344,10 +344,7 @@
                 <pre><code>
         class ProblemSolverTest extends \PHPUnit_Framework_TestCase
         {
-            /**
-            * @test
-            */
-            public function doTheMagic()
+            public function testDoTheMagic()
             {
                 $ps = new ProblemSolver();
                 $mock = \Mockery::mock('swift_mailer');
@@ -357,9 +354,33 @@
 
                 $this->assertEquals(42, $ps->doTheMagic());
             }
+
+            public function doTheMagicNoMailer()
+            {
+                $ps = new ProblemSolver();
+                $this->assertEquals(-1, $ps->doTheMagic());
+            }
+                </code></pre>
+            </section>
+
+            <section>
+                <pre><code>
+        /**
+        * @test
+        * Obtain services from container, jmsdi in use
+        */
+        public function doTheMagicWithContainer()
+        {
+            $kernel = self::createKernel();
+            $kernel->boot();
+
+            $this->problemSolver = $kernel->getContainer()
+                                   ->get('mrok.problem_solver');
+            $this->assertEquals(42, $this->problemSolver->doTheMagic());
         }
                 </code></pre>
             </section>
+
             <section>
                 <img src="images/tests.png">
             </section>
