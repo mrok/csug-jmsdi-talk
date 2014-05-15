@@ -151,6 +151,15 @@
                 </code></pre>
             </section>
             <section>
+                <h4>standard way</h4>
+                <pre><code>
+    services:
+        mrok.service.id:
+            class: Mrok\PressBundle\Service\ProblemSolver
+                </code></pre>
+            </section>
+            <section>
+                <h4>diextra way</h4>
                 <pre><code>
     use JMS\DiExtraBundle\Annotation\Service;
 
@@ -184,6 +193,16 @@
                 </code></pre>
             </section>
             <section>
+                <h4>standard way</h4>
+                <pre><code>
+    services:
+        mrok.service.id:
+            class: Mrok\PressBundle\Service\ProblemSolver
+            arguments: [@doctrine.orm.entity_manager]
+                </code></pre>
+            </section>
+            <section>
+                <h4>diextra way</h4>
                 <pre><code>
         use JMS\DiExtraBundle\Annotation as DI;
 
@@ -226,6 +245,18 @@
                 </code></pre>
             </section>
             <section>
+                <h4>standard way</h4>
+                <pre><code>
+    services:
+        mrok.service.id:
+            class: Mrok\PressBundle\Service\ProblemSolver
+            properties:
+                mailer: "@doctrine.orm.entity_manager"
+                cacheDir: "%kernel.cache_dir%"
+                </code></pre>
+            </section>
+            <section>
+                <h4>diextra way</h4>
                 <pre><code>
         use JMS\DiExtraBundle\Annotation\Inject;
 
